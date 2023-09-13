@@ -71,10 +71,16 @@ if [ -n "$GPG_FINGERPRINT" ]; then
   assets+=(checksums.txt checksums.txt.sig)
 fi
 
+release_repo="$GITHUB_REPOSITORY"
+if [ -n "$GH_TARGET_RELEASE_REPO" ]; then
+  echo "invoking target release repo override $GH_TARGET_RELEASE_REPO"
+  release_repo="$GH_TARGET_RELEASE_REPO"
+fi
+
 if gh release view "$tag" >/dev/null; then
   echo "uploading assets to an existing release..."
-  gh release upload "$tag" --clobber -- "${assets[@]}"
+  gh release upload "$tag" --clobber --repo "$release_repo" -- "${assets[@]}"
 else
   echo "creating release and uploading assets..."
-  gh release create "$tag" $prerelease --title="${GITHUB_REPOSITORY#*/} ${tag#v}" --generate-notes -- "${assets[@]}"
+  gh release create "$tag" $prerelease --title="${GITHUB_REPOSITORY#*/} ${tag#v}" --generate-notes --repo "$release_repo" -- "${assets[@]}"
 fi

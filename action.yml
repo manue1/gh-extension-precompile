@@ -7,6 +7,8 @@ inputs:
     description: "Path to custom build script for producing binaries to upload"
   release_tag_override:
     description: "Existing tag that the release should be created from"
+  release_repository_override:
+    description: "The repository in which the release should be created"
   go_version:
     description: "The Go version to use for compiling (supports semver spec and ranges)"
     default: "1.18"
@@ -26,5 +28,6 @@ runs:
         GITHUB_TOKEN: ${{ github.token }}
         GH_EXT_BUILD_SCRIPT: ${{ inputs.build_script_override }}
         GH_RELEASE_TAG: ${{ inputs.release_tag_override }}
+        GH_TARGET_RELEASE_REPO: ${{ inputs.release_repository_override }}
         GPG_FINGERPRINT: ${{ inputs.gpg_fingerprint }}
       shell: bash
